@@ -15,6 +15,7 @@ Currently available and actively maintained extensions:
 | Status | Skill / Extension | Description | Link |
 | :---: | :--- | :--- | :--- |
 | ✅ | **Google Calendar Agent** | Read-only Google Calendar integration. Empowers the LLM to autonomously query events, analyze daily schedules, and extract meeting details using natural language. | [View Details](./extensions/google-calendar) |
+| 🚧 | **Weibo Agent** | *(In Development)* Weibo integration. Empowers the LLM to browse hot topics, monitor trends, and summarize posts. | [View Details](./extensions/weibo) |
 
 *(Click on "View Details" to see the specific setup guide, tools, and technical implementation for each extension.)*
 
@@ -29,20 +30,27 @@ openclaw-skills/
 ├── README.md                 # 👈 You are here (Project Overview)
 ├── docs/                     # Architecture designs and engineering notes
 └── extensions/               # The actual Agent tools
-    └── google-calendar/      # 📅 Google Calendar Plugin
-        ├── index.ts          # Core logic & Google API integration
-        ├── package.json      
-        ├── openclaw.plugin.json 
-        ├── README.md         # Detailed setup & OAuth instructions
+    ├── google-calendar/      # 📅 Google Calendar Plugin
+    │   ├── index.ts          # Core logic & Google API integration
+    │   ├── package.json      
+    │   ├── openclaw.plugin.json 
+    │   ├── README.md         # Detailed setup & OAuth instructions
+    │   └── skills/
+    │       └── SKILL.md      # LLM behavior guidance & Prompt Overrides
+    └── weibo/                # 📱 Weibo Plugin (WIP)
+        ├── README.md         # Placeholder info
         └── skills/
-            └── SKILL.md      # LLM behavior guidance & Prompt Overrides
+            └── SKILL.md      # Weibo behavior guidance
 
 ```
 
 ## Usage
 
 Clone and copy into your OpenClaw extensions directory:
+
 ```bash
-git clone https://github.com/Eric-LLMs/openclaw-skills.git
+git clone [https://github.com/Eric-LLMs/openclaw-skills.git](https://github.com/Eric-LLMs/openclaw-skills.git)
 cp -r openclaw-skills/extensions/google-calendar ~/.openclaw/extensions/
+
 ```
+---
