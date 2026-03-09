@@ -29,19 +29,20 @@ This repository is structured as a monorepo for OpenClaw plugins:
 openclaw-skills/
 ├── README.md                 # 👈 You are here (Project Overview)
 ├── docs/                     # Architecture designs and engineering notes
-└── extensions/               # The actual Agent tools
-    ├── google-calendar/      # 📅 Google Calendar Plugin
-    │   ├── index.ts          # Core logic & Google API integration
-    │   ├── package.json      
-    │   ├── openclaw.plugin.json 
-    │   ├── README.md         # Detailed setup & OAuth instructions
-    │   └── skills/
-    │       └── SKILL.md      # LLM behavior guidance & Prompt Overrides
-    └── weibo/                # 📱 Weibo Plugin (WIP)
-        ├── README.md         # Placeholder info
-        └── skills/
-            └── SKILL.md      # Weibo behavior guidance
-
+├── extensions/               # The actual Agent tools (Logic, APIs & OAuth integration)
+│   ├── google-calendar/      # 📅 Google Calendar Plugin
+│   │   ├── index.ts          # Core logic & Google API integration
+│   │   ├── package.json      
+│   │   ├── openclaw.plugin.json 
+│   │   ├── README.md         # Detailed setup & OAuth instructions
+│   │   └── skills/           # Internal plugin instructions
+│   │       └── SKILL.md      # LLM behavior guidance & Prompt Overrides
+│   └── weibo/                # 📱 Weibo Plugin (WIP)
+│       ├── README.md         # Placeholder info
+│       └── skills/
+│           └── SKILL.md      # Weibo behavior guidance
+└── Skills/                   # Standalone behavior guidance & instruction-based tasks (No-code)
+    └── Standalone-Prompt.md
 ```
 
 ## Usage
@@ -49,7 +50,7 @@ openclaw-skills/
 Clone and copy into your OpenClaw extensions directory:
 
 ```bash
-git clone [https://github.com/Eric-LLMs/openclaw-skills.git](https://github.com/Eric-LLMs/openclaw-skills.git)
+git clone https://github.com/Eric-LLMs/openclaw-skills.git
 cp -r openclaw-skills/extensions/google-calendar ~/.openclaw/extensions/
 
 ```
