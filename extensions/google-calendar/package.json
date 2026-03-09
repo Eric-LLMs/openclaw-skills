@@ -1,0 +1,11 @@
+{
+  "name": "@openclaw-extensions/google-calendar",
+  "version": "1.0.0",
+  "description": "Google Calendar read-only plugin for OpenClaw",
+  "type": "module",
+  "main": "./index.ts",
+  "openclaw": {
+    "extensions": ["./index.ts"]
+  },
+  "dependencies": {}
+}
