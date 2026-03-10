@@ -12,10 +12,10 @@ Personal OpenClaw skills and extensions and advanced use cases built for the [Op
 
 Currently available and actively maintained extensions:
 
-| Status | Skill / Extension | Description | Link |
-| :---: | :--- | :--- | :--- |
-| ✅ | **Google Calendar Agent** | Read-only Google Calendar integration. Empowers the LLM to autonomously query events, analyze daily schedules, and extract meeting details using natural language. | [View Details](./extensions/google-calendar) |
-| 🚧 | **Weibo Agent** | *(In Development)* Weibo integration. Empowers the LLM to browse hot topics, monitor trends, and summarize posts. | [View Details](./extensions/weibo) |
+| Status | Skill / Extension | Description | Link                            |
+| :---: | :--- | :--- |:--------------------------------|
+| ✅ | **Google Calendar Agent** | Read-only Google Calendar integration. Empowers the LLM to autonomously query events, analyze daily schedules, and extract meeting details using natural language. | [View Details](google-calendar) |
+| 🚧 | **Weibo Agent** | *(In Development)* Weibo integration. Empowers the LLM to browse hot topics, monitor trends, and summarize posts. | [View Details](weibo)           |
 
 *(Click on "View Details" to see the specific setup guide, tools, and technical implementation for each extension.)*
 
@@ -27,22 +27,23 @@ This repository is structured as a monorepo for OpenClaw plugins:
 
 ```text
 openclaw-skills/
-├── README.md                 # 👈 You are here (Project Overview)
-├── docs/                     # Architecture designs and engineering notes
-├── extensions/               # The actual Agent tools (Logic, APIs & OAuth integration)
-│   ├── google-calendar/      # 📅 Google Calendar Plugin
-│   │   ├── index.ts          # Core logic & Google API integration
-│   │   ├── package.json      
-│   │   ├── openclaw.plugin.json 
-│   │   ├── README.md         # Detailed setup & OAuth instructions
-│   │   └── skills/           # Internal plugin instructions
-│   │       └── SKILL.md      # LLM behavior guidance & Prompt Overrides
-│   └── weibo/                # 📱 Weibo Plugin (WIP)
-│       ├── README.md         # Placeholder info
-│       └── skills/
-│           └── SKILL.md      # Weibo behavior guidance
-└── Skills/                   # Standalone behavior guidance & instruction-based tasks (No-code)
-    └── Standalone-Prompt.md
+├── README.md                     # 👈 You are here (Project Overview)
+├── google-calendar/              # 📅 Google Calendar Plugin
+│   ├── extensions/               
+│   │   └── google-calendar/      # The actual Agent tools (Logic, APIs & OAuth integration)
+│   │       ├── index.ts          # Core logic & Google API integration
+│   │       ├── openclaw.plugin.json 
+│   │       └── package.json      
+│   ├── Skills/                   
+│   │   └── google-calendar/      
+│   │       └── SKILL.md          # LLM behavior guidance & Prompt Overrides
+│   ├── Standalone-Prompt.md      # Standalone instruction-based tasks
+│   └── README.md                 # Detailed setup & OAuth instructions
+└── weibo/                        # 📱 Weibo Plugin (WIP)
+    ├── Skills/                   
+    │   └── SKILL.md              # Weibo behavior guidance
+    └── README.md                 # Placeholder info
+
 ```
 
 ## Usage
@@ -50,8 +51,12 @@ openclaw-skills/
 Clone and copy into your OpenClaw extensions directory:
 
 ```bash
-git clone https://github.com/Eric-LLMs/openclaw-skills.git
-cp -r openclaw-skills/extensions/google-calendar ~/.openclaw/extensions/
+git clone [https://github.com/Eric-LLMs/openclaw-skills.git](https://github.com/Eric-LLMs/openclaw-skills.git)
+cp -r openclaw-skills/google-calendar/extensions/google-calendar ~/.openclaw/extensions/
+cp -r openclaw-skills/google-calendar/Skills/google-calendar ~/.openclaw/Skills/
 
 ```
+
 ---
+
+```
