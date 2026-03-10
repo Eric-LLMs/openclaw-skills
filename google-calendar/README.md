@@ -76,6 +76,7 @@ EOF
 
 ```bash
 # copy into your OpenClaw plugin directory:
+git clone https://github.com/Eric-LLMs/openclaw-skills.git
 cp -r openclaw-skills/google-calendar/extensions/google-calendar ~/.openclaw/extensions/
 cp -r openclaw-skills/google-calendar/Skills/google-calendar ~/.openclaw/Skills/
 
@@ -83,7 +84,7 @@ cp -r openclaw-skills/google-calendar/Skills/google-calendar ~/.openclaw/Skills/
 openclaw gateway restart
 
 # Docker users:
-docker restart openclaw_server
+docker restart openclaw_server  (restart your openclaw service)
 docker logs openclaw_server | grep google-calendar
 # Expected: [google-calendar] Loaded. calendarId="primary"
 ```
