@@ -75,8 +75,9 @@ EOF
 ### Step 4 — Place files & restart
 
 ```bash
-# Copy extension into place
-cp -r extensions/google-calendar ~/.openclaw/extensions/
+# copy into your OpenClaw plugin directory:
+cp -r openclaw-skills/google-calendar/extensions/google-calendar ~/.openclaw/extensions/
+cp -r openclaw-skills/google-calendar/Skills/google-calendar ~/.openclaw/Skills/
 
 # Restart gateway
 openclaw gateway restart
@@ -92,13 +93,17 @@ docker logs openclaw_server | grep google-calendar
 ## File Structure
 
 ```
-extensions/google-calendar/
-├── package.json           # openclaw.extensions entry point
-├── openclaw.plugin.json   # plugin manifest & config schema
-├── index.ts               # plugin code (3 tools)
-├── skills/
-│   └── SKILL.md           # LLM behavior guidance
-└── README.md
+google-calendar/              # 📅 Google Calendar Plugin
+├── extensions/               
+│   └── google-calendar/      # The actual Agent tools (Logic, APIs & OAuth integration)
+│       ├── index.ts          # Core logic & Google API integration
+│       ├── openclaw.plugin.json 
+│       └── package.json      
+├── Skills/                   
+│   └── google-calendar/      
+│       └── SKILL.md          # LLM behavior guidance & Prompt Overrides
+├── Standalone-Prompt.md      # Standalone instruction-based tasks
+└── README.md                 # Detailed setup & OAuth instructions
 ```
 
 ---

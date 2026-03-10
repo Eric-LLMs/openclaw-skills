@@ -48,10 +48,10 @@ openclaw-skills/
 
 ## Usage
 
-Clone and copy into your OpenClaw extensions directory:
+Clone and copy into your OpenClaw plugin directory:
 
 ```bash
-git clone [https://github.com/Eric-LLMs/openclaw-skills.git](https://github.com/Eric-LLMs/openclaw-skills.git)
+git clone https://github.com/Eric-LLMs/openclaw-skills.git
 cp -r openclaw-skills/google-calendar/extensions/google-calendar ~/.openclaw/extensions/
 cp -r openclaw-skills/google-calendar/Skills/google-calendar ~/.openclaw/Skills/
 
