@@ -80,6 +80,10 @@ git clone https://github.com/Eric-LLMs/openclaw-skills.git
 cp -r openclaw-skills/google-calendar/extensions/google-calendar ~/.openclaw/extensions/
 cp -r openclaw-skills/google-calendar/Skills/google-calendar ~/.openclaw/Skills/
 
+# build the project
+pnpm ui:build
+pnpm build
+
 # Restart gateway
 openclaw gateway restart
 
