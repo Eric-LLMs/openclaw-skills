@@ -1,7 +1,7 @@
 ---
 name: google-calendar
 description: Query the user's Google Calendar events and meeting details. Use when user asks about schedule, meetings, appointments, or availability.
-metadata: {"openclaw":{"emoji":"📅"}}
+metadata: {"openclaw":{"emoji":"📅","requires":{"config":["skills.google-calendar"]}}}
 ---
 
 # Google Calendar 📅
@@ -32,33 +32,8 @@ metadata: {"openclaw":{"emoji":"📅"}}
 | 明天 | `2026-03-14` | `2026-03-14` |
 | 下周 | `2026-03-16` | `2026-03-22` |
 
-### 🚫 绝对禁止
+## 💡 Output Guide (Internal)
 
-- 用户说"3月10日"，却传今天的日期
-- 用户说"到12日"，却传13日或其他日期
-
-## ⚠️ 极其重要：拿到工具结果后必须逐条展示给用户
-
-**工具返回 JSON 数据后，必须将每个事件逐条列出，绝对不能沉默、不能只说"查询完毕"、不能省略事件内容。**
-
-### 展示格式
-
-```
-📅 3月10日（周二）
-
-• 10:00 - 11:00  产品评审
-  🔗 会议链接：meet.google.com/xxx
-  👥 参与者：alice@example.com
-
-• 14:00 - 15:00  1:1 with Sarah
-```
-
-- 按日期分组，每天一个标题
-- 每个事件显示：时间段、标题、会议链接（如有）、参与者（如有）
-- 工具返回 `"No events found."` 时回复"该时间段没有日程安排"
-
-## 错误处理
-
-- `invalid_grant`：refresh token 过期，告知用户需重新授权
-- 403：权限不足，检查 OAuth scope 是否含 `calendar.readonly`
-- 404：事件不存在或已删除
+- **Return Format**: ALWAYS return data as a plain text Markdown string. 
+- **No JSON**: Do not return raw JSON arrays or objects starting with `[` or `{`, as it will be intercepted by the framework.
+- **Language**: If events are found, summarize them in Chinese.

@@ -78,23 +78,67 @@ function finalizeTime(raw: string | undefined | null, isEnd: boolean): string {
   return str
 }
 
-// ── 辅助：格式化事件列表 ────────────────────────────────────────────────────────
+// ── Helper: Format event list (Safe Plain Text Markdown) ──
 function formatEvents(items: any[]): string {
-  if (!items.length) return "No events found."
-  return JSON.stringify(
-    items.map((e: any) => ({
-      id:             e.id,
-      title:          e.summary          ?? "(No title)",
-      start:          e.start?.dateTime  ?? e.start?.date,
-      end:            e.end?.dateTime    ?? e.end?.date,
-      location:       e.location         ?? null,
-      attendees:      (e.attendees ?? []).map((a: any) => a.email),
-      conferenceLink: e.conferenceData?.entryPoints?.[0]?.uri ?? null,
-      link:           e.htmlLink,
-    })),
-    null,
-    2
-  )
+  if (!items || items.length === 0) {
+    return "Query complete: No scheduled events found for this period.";
+  }
+
+  // 1. 提取时间
+  const formatLiteralTime = (rawDate: string | undefined) => {
+    if (!rawDate) return "Unknown";
+    if (!rawDate.includes("T")) return rawDate;
+    try {
+      const d = new Date(rawDate);
+      const literalStr = d.toLocaleString("zh-CN", {
+        timeZone: "America/New_York",
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit',
+        hour12: false
+      });
+      return literalStr.replace(/\//g, "-");
+    } catch (e) {
+      return rawDate;
+    }
+  };
+
+  // 2. 净化备注（不用再压缩成一行了，Markdown 里换行很好看）
+  const parseDesc = (html: string | undefined) => {
+    if (!html) return "";
+    let text = html.replace(/<li>/g, '\n  - ');
+    text = text.replace(/<\/li>|<br>|<br\/>|<\/p>|<\/div>|<\/ul>/g, '\n  ');
+    text = text.replace(/<[^>]+>/g, '');
+    text = text.trim();
+    return text.length > 300 ? text.substring(0, 300) + "..." : text;
+  };
+
+  // 🚨 核心修复：坚决不返回 JSON 数组！只返回大模型最爱看的纯 Markdown 字符串！
+  let mdResult = `Query successful. Found ${items.length} events:\n\n`;
+
+  items.forEach((e: any, index: number) => {
+    const title = e.summary ?? "(No title)";
+    const start = formatLiteralTime(e.start?.dateTime ?? e.start?.date);
+    const end = formatLiteralTime(e.end?.dateTime ?? e.end?.date);
+    const desc = parseDesc(e.description);
+
+    mdResult += `### ${index + 1}. ${title}\n`;
+    mdResult += `- **Time**: ${start} ~ ${end}\n`;
+    if (e.location && e.location !== "None") {
+      mdResult += `- **Location**: ${e.location}\n`;
+    }
+    if (desc) {
+      mdResult += `- **Notes**: \n  ${desc}\n`;
+    }
+    mdResult += `\n`;
+  });
+
+  // 强制大模型用中文回答
+  mdResult += "---\n*SYSTEM INSTRUCTION: Data retrieved successfully. You MUST reply to the user in Chinese and summarize the above schedule. DO NOT stay silent.*";
+
+  // 用 error 打印，绝对防止污染 stdout 数据流
+  console.error(`[google-calendar] Final Markdown sent to LLM:\n${mdResult}`);
+
+  return mdResult;
 }
 
 // ── 插件注册入口 ─────────────────────────────────────────────────────────────────
@@ -136,6 +180,10 @@ export function register(api: OpenClawPluginApi) {
       url.searchParams.set("orderBy",      "startTime")
       url.searchParams.set("maxResults",   "20")
 
+      // 自动侦测当前服务器/系统的时区并告诉 Google
+      const systemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      url.searchParams.set("timeZone", systemTimeZone);
+
       const r    = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}` }, signal })
       const data = (await r.json()) as any
       if (!r.ok) throw new Error(`Calendar API error ${r.status}: ${JSON.stringify(data)}`)
@@ -169,26 +217,7 @@ export function register(api: OpenClawPluginApi) {
       },
       required: ["timeMin", "timeMax"],
     },
-    // async execute({ params, signal }: { params: any; signal: AbortSignal }) {
-    //   const token   = await getAccessToken(cfg)
-    //   const timeMin = finalizeTime(params?.timeMin, false)
-    //   const timeMax = finalizeTime(params?.timeMax, true)
-    //
-    //   console.log(`[google-calendar] calendar_list_events: ${timeMin} ~ ${timeMax}`)
-    //
-    //   const url = new URL(`https://www.googleapis.com/calendar/v3/calendars/${calId()}/events`)
-    //   url.searchParams.set("timeMin",      timeMin)
-    //   url.searchParams.set("timeMax",      timeMax)
-    //   url.searchParams.set("maxResults",   String(params?.maxResults ?? 20))
-    //   url.searchParams.set("singleEvents", "true")
-    //   url.searchParams.set("orderBy",      "startTime")
-    //   if (params?.query) url.searchParams.set("q", params.query)
-    //
-    //   const r    = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}` }, signal })
-    //   const data = (await r.json()) as any
-    //   if (!r.ok) throw new Error(`Calendar API error ${r.status}: ${JSON.stringify(data)}`)
-    //   return formatEvents(data.items ?? [])
-    // },
+
     async execute(...argsArray: any[]) {
       // 1. 打印被拦截到的所有参数数组，你会看到参数原来藏在 argsArray[1] 里！
       console.log("==== 🧐 框架拦截到的参数数组 ====");
@@ -225,13 +254,18 @@ export function register(api: OpenClawPluginApi) {
         }
       }
 
-      // 3. 时间补齐机制
+      // 3. 时间补齐机制：直接把本地日期当成美国时间查！
       let rawMin = payload.timeMin || new Date().toISOString().split('T')[0];
       let rawMax = payload.timeMax;
 
       const finalizeTime = (str: string, isEnd: boolean) => {
-        if (str.includes('T')) return str;
-        return isEnd ? `${str}T23:59:59+08:00` : `${str}T00:00:00+08:00`;
+        if (str.includes('T')) {
+          if (str.endsWith('Z')) return str;
+          // 如果只有 T 没有时区后缀，给它强行补上纽约的时差！
+          if (!str.match(/[+-]\d{2}:\d{2}$/)) return `${str}-04:00`;
+          return str;
+        }
+        return isEnd ? `${str}T23:59:59-04:00` : `${str}T00:00:00-04:00`;
       };
 
       let timeMin = finalizeTime(rawMin, false);
@@ -248,6 +282,11 @@ export function register(api: OpenClawPluginApi) {
       url.searchParams.set("maxResults",   String(payload.maxResults ?? 50));
       url.searchParams.set("singleEvents", "true");
       url.searchParams.set("orderBy",      "startTime");
+
+      // 自动侦测当前服务器/系统的时区并告诉 Google
+      const systemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      url.searchParams.set("timeZone", systemTimeZone);
+
       if (payload.query) url.searchParams.set("q", payload.query);
 
       const r    = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}` }, signal: actualSignal });
@@ -276,32 +315,7 @@ export function register(api: OpenClawPluginApi) {
       },
       required: ["eventId"],
     },
-    // async execute({ params, signal }: { params: any; signal: AbortSignal }) {
-    //   const token = await getAccessToken(cfg)
-    //   const r     = await fetch(
-    //     `https://www.googleapis.com/calendar/v3/calendars/${calId()}/events/${params.eventId}`,
-    //     { headers: { Authorization: `Bearer ${token}` }, signal }
-    //   )
-    //   const data = (await r.json()) as any
-    //   if (!r.ok) throw new Error(`Calendar API error ${r.status}: ${JSON.stringify(data)}`)
-    //   return JSON.stringify({
-    //     id:             data.id,
-    //     title:          data.summary,
-    //     start:          data.start?.dateTime  ?? data.start?.date,
-    //     end:            data.end?.dateTime    ?? data.end?.date,
-    //     location:       data.location         ?? null,
-    //     description:    data.description      ?? null,
-    //     organizer:      data.organizer?.email ?? null,
-    //     attendees:      (data.attendees ?? []).map((a: any) => ({
-    //       email:          a.email,
-    //       responseStatus: a.responseStatus,
-    //     })),
-    //     conferenceLink: data.conferenceData?.entryPoints?.[0]?.uri ?? null,
-    //     recurrence:     data.recurrence       ?? null,
-    //     status:         data.status,
-    //     link:           data.htmlLink,
-    //   }, null, 2)
-    // },
+
     async execute(...argsArray: any[]) {
       // 暴力搜查器：找出带有 eventId 的对象
       let payload: any = {};
