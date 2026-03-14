@@ -133,10 +133,10 @@ function formatEvents(items: any[]): string {
   });
 
   // 强制大模型用中文回答
-  mdResult += "---\n*SYSTEM INSTRUCTION: Data retrieved successfully. You MUST reply to the user in Chinese and summarize the above schedule. DO NOT stay silent.*";
+  mdResult += "---\n*SYSTEM INSTRUCTION: Data retrieved successfully. You MUST reply to the user and summarize the above schedule. DO NOT stay silent.*";
 
   // 用 error 打印，绝对防止污染 stdout 数据流
-  console.error(`[google-calendar] Final Markdown sent to LLM:\n${mdResult}`);
+  // console.error(`[google-calendar] Final Markdown sent to LLM:\n${mdResult}`);
 
   return mdResult;
 }
@@ -152,7 +152,7 @@ export function register(api: OpenClawPluginApi) {
      calendarId?:  string
   }
 
-  console.log(`[google-calendar] cfg.clientId=`, cfg?.clientId?.slice(0, 20))
+  // console.log(`[google-calendar] cfg.clientId=`, cfg?.clientId?.slice(0, 20))
 
   const calId = () => encodeURIComponent(((cfg.calendarId ?? "primary") + "").trim())
 
@@ -187,14 +187,15 @@ export function register(api: OpenClawPluginApi) {
       const r    = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}` }, signal })
       const data = (await r.json()) as any
       if (!r.ok) throw new Error(`Calendar API error ${r.status}: ${JSON.stringify(data)}`)
-      return formatEvents(data.items ?? [])
+      const text1 = formatEvents(data.items ?? [])
+      return { content: [{ type: "text", text: text1 }], details: { items: data.items ?? [] } }
     },
   })
 
   // ── Tool 2: 按时间范围查询事件 ─────────────────────────────────────────────
   api.registerTool({
     name: "calendar_list_events",
-    description: `Query Google Calendar events for a date range. Current year is ${new Date().getFullYear()}. If user does not specify a year, always use ${new Date().getFullYear()}. Supports partial dates like "03-11" or "3/11".`,
+    description: `Query Google Calendar events for a date range. Today is ${new Date().toISOString().slice(0, 10)}. Current year is ${new Date().getFullYear()}. If user does not specify a year, always use ${new Date().getFullYear()}. Supports partial dates like "03-11" or "3/11".`,
     parameters: {
       type: "object",
       properties: {
@@ -297,7 +298,8 @@ export function register(api: OpenClawPluginApi) {
       console.log(`[google-calendar] API returned ${(data.items ?? []).length} items, timeZone=${data.timeZone}`);
       if (data.items?.length > 0) console.log(`[google-calendar] first item: ${JSON.stringify(data.items[0].start)}`);
 
-      return formatEvents(data.items ?? []);
+      const text2 = formatEvents(data.items ?? []);
+      return { content: [{ type: "text", text: text2 }], details: { items: data.items ?? [], timeMin, timeMax } };
     },
   })
 
@@ -343,7 +345,7 @@ export function register(api: OpenClawPluginApi) {
       const data = (await r.json()) as any
       if (!r.ok) throw new Error(`Calendar API error ${r.status}: ${JSON.stringify(data)}`)
 
-      return JSON.stringify({
+      const summary = {
         id:             data.id,
         title:          data.summary,
         start:          data.start?.dateTime  ?? data.start?.date,
@@ -358,9 +360,10 @@ export function register(api: OpenClawPluginApi) {
         conferenceLink: data.conferenceData?.entryPoints?.[0]?.uri ?? null,
         status:         data.status,
         link:           data.htmlLink,
-      }, null, 2)
+      }
+      return { content: [{ type: "text", text: JSON.stringify(summary, null, 2) }], details: summary }
     },
   })
 
-  console.log(`[google-calendar] Loaded. calendarId="${cfg.calendarId ?? "primary"}"`)
+  // console.log(`[google-calendar] Loaded. calendarId="${cfg.calendarId ?? "primary"}"`)
 }

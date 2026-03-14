@@ -18,11 +18,9 @@ metadata: {"openclaw":{"emoji":"📅","requires":{"config":["skills.google-calen
 
 ## ⚠️ 极其重要：工具参数必须严格按用户说的日期填写
 
-**当前日期：2026-03-13**
-
 ### 日期传参规则
 
-只传日期部分即可，例如 `"2026-03-10"`，不需要加时间和时区后缀。
+只传日期部分即可，例如 `"2026-03-8"`，不需要加时间和时区后缀。
 
 | 用户说 | timeMin | timeMax |
 |--------|---------|---------|
@@ -36,4 +34,4 @@ metadata: {"openclaw":{"emoji":"📅","requires":{"config":["skills.google-calen
 
 - **Return Format**: ALWAYS return data as a plain text Markdown string. 
 - **No JSON**: Do not return raw JSON arrays or objects starting with `[` or `{`, as it will be intercepted by the framework.
-- **Language**: If events are found, summarize them in Chinese.
+- **Language**: If events are found, summarize them.
