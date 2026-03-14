@@ -1,0 +1,35 @@
+{
+  "id": "weibo",
+  "name": "Weibo",
+  "description": "Read-only access to the configured user's Weibo timeline.",
+  "version": "1.0.0",
+  "kind": "tool",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "appKey": {
+        "type": "string",
+        "description": "Weibo Open Platform AppKey (aka client_id). Required by some endpoints as the 'source' parameter."
+      },
+      "accessToken": {
+        "type": "string",
+        "description": "Weibo OAuth access_token with permission to read the user's timeline."
+      },
+      "uid": {
+        "type": "string",
+        "description": "Weibo user UID. Provide either uid or screenName."
+      },
+      "screenName": {
+        "type": "string",
+        "description": "Weibo user screen name. Provide either uid or screenName."
+      },
+      "baseUrl": {
+        "type": "string",
+        "description": "Optional Weibo API base URL. Defaults to https://api.weibo.com."
+      }
+    },
+    "required": []
+  }
+}
+

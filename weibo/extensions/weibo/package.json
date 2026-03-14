@@ -1,0 +1,12 @@
+{
+  "name": "@openclaw-extensions/weibo",
+  "version": "1.0.0",
+  "description": "Weibo read-only plugin for OpenClaw. Fetch and summarize recent posts for a configured user.",
+  "type": "module",
+  "main": "index.ts",
+  "openclaw": {
+    "extensions": ["./index.ts"]
+  },
+  "dependencies": {}
+}
+
