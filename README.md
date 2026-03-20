@@ -25,7 +25,7 @@ Currently available and actively maintained addons:
 This repository is structured as a monorepo for OpenClaw plugins:
 
 ```text
-openclaw-skills/
+openclaw-addons/
 ├── README.md                     # 👈 You are here (Project Overview)
 ├── google-calendar/              # 📅 Google Calendar Plugin
 │   ├── extensions/               
