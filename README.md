@@ -4,7 +4,7 @@
 [![AI Agents](https://img.shields.io/badge/AI%20Agents-Function%20Calling-FF9900?style=flat-square)]()
 [![Status](https://img.shields.io/badge/Status-Active%20Development-success?style=flat-square)]()
 
-Personal OpenClaw skills and extensions and advanced use cases built for the [OpenClaw](https://github.com/Eric-LLMs/openclaw.git) AI Agent framework. 
+A collection of personal OpenClaw addons—including skills, extensions, and channels for Google Calendar, Weibo, and more—along with advanced use cases built for the [OpenClaw](https://github.com/Eric-LLMs/openclaw.git) AI Agent framework. 
 
 ---
 
@@ -15,7 +15,7 @@ Currently available and actively maintained extensions:
 | Status | Skill / Extension | Description | Link                            |
 | :---: | :--- | :--- |:--------------------------------|
 | ✅ | **Google Calendar Agent** | Read-only Google Calendar integration. Empowers the LLM to autonomously query events, analyze daily schedules, and extract meeting details using natural language. | [View Details](google-calendar) |
-| 🚧 | **Weibo Agent** | *(In Development)* Weibo integration. Empowers the LLM to browse hot topics, monitor trends, and summarize posts. | [View Details](weibo)           |
+| ✅ | **Weibo Agent** | Read-only Weibo integration. Empowers the LLM to fetch a user's recent posts, monitor activity, and summarize timelines. | [View Details](weibo)           |
 
 *(Click on "View Details" to see the specific setup guide, tools, and technical implementation for each extension.)*
 
@@ -39,10 +39,16 @@ openclaw-skills/
 │   │       └── SKILL.md          # LLM behavior guidance & Prompt Overrides
 │   ├── Standalone-Prompt.md      # Standalone instruction-based tasks
 │   └── README.md                 # Detailed setup & OAuth instructions
-└── weibo/                        # 📱 Weibo Plugin (WIP)
+└── weibo/                        # 📱 Weibo Plugin
+    ├── extensions/               
+    │   └── weibo/                # The actual Agent tools (Weibo API integration)
+    │       ├── index.ts          # Core logic & Weibo API integration
+    │       ├── openclaw.plugin.json 
+    │       └── package.json      
     ├── Skills/                   
-    │   └── SKILL.md              # Weibo behavior guidance
-    └── README.md                 # Placeholder info
+    │   └── weibo/                # Weibo Skill folder
+    │       └── SKILL.md          # Weibo behavior guidance
+    └── README.md                 # Detailed setup & usage instructions
 
 ```
 
@@ -54,7 +60,8 @@ Clone and copy into your OpenClaw plugin directory:
 git clone https://github.com/Eric-LLMs/openclaw-skills.git
 cp -r openclaw-skills/google-calendar/extensions/google-calendar ~/.openclaw/extensions/
 cp -r openclaw-skills/google-calendar/Skills/google-calendar ~/.openclaw/Skills/
-
+cp -r openclaw-skills/weibo/extensions/weibo ~/.openclaw/extensions/
+cp -r openclaw-skills/weibo/Skills/weibo ~/.openclaw/Skills/
 ```
 
 ---
