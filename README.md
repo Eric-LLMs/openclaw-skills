@@ -1,4 +1,4 @@
-# 🦞 OpenClaw Custom Skills & Use Cases
+# 🦞 OpenClaw Custom Addons & Use Cases
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)]()
 [![AI Agents](https://img.shields.io/badge/AI%20Agents-Function%20Calling-FF9900?style=flat-square)]()
@@ -7,17 +7,16 @@
 A collection of personal OpenClaw addons—including skills, extensions, and channels for Google Calendar, Weibo, and more—along with advanced use cases built for the [OpenClaw](https://github.com/Eric-LLMs/openclaw.git) AI Agent framework. 
 
 ---
+## 🧩 Addons Catalog
 
-## 📦 Skills Catalog
+Currently available and actively maintained addons:
 
-Currently available and actively maintained extensions:
+| Status | Name | Type | Description | Link |
+| :---: | :--- | :---: | :--- | :--- |
+| ✅ | **Google Calendar** | `Extension` | Read-only Google Calendar integration. Empowers the LLM to autonomously query events, analyze daily schedules, and extract meeting details using natural language. | [View Details](google-calendar) |
+| ✅ | **Weibo Agent** | `Extension` | Read-only Weibo integration. Empowers the LLM to fetch a user's recent posts, monitor activity, and summarize timelines. | [View Details](weibo) |
 
-| Status | Skill / Extension | Description | Link                            |
-| :---: | :--- | :--- |:--------------------------------|
-| ✅ | **Google Calendar Agent** | Read-only Google Calendar integration. Empowers the LLM to autonomously query events, analyze daily schedules, and extract meeting details using natural language. | [View Details](google-calendar) |
-| ✅ | **Weibo Agent** | Read-only Weibo integration. Empowers the LLM to fetch a user's recent posts, monitor activity, and summarize timelines. | [View Details](weibo)           |
-
-*(Click on "View Details" to see the specific setup guide, tools, and technical implementation for each extension.)*
+*(Click on "View Details" to see the specific setup guide, tools, and technical implementation for each addon.)*
 
 ---
 
