@@ -4,7 +4,7 @@
 [![AI Agents](https://img.shields.io/badge/AI%20Agents-Function%20Calling-FF9900?style=flat-square)]()
 [![Status](https://img.shields.io/badge/Status-Active%20Development-success?style=flat-square)]()
 
-A collection of personal OpenClaw addons—including skills, extensions, and channels for Google Calendar, Weibo, and more—along with advanced use cases built for the [OpenClaw](https://github.com/Eric-LLMs/openclaw.git) AI Agent framework. 
+A collection of personal OpenClaw addons—including skills, extensions, and channels—along with advanced use cases built for the [OpenClaw](https://github.com/Eric-LLMs/openclaw.git) AI Agent framework. 
 
 ---
 ## 🧩 Addons Catalog
